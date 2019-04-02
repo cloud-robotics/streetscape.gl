@@ -26,7 +26,7 @@ import DeckGL, {COORDINATE_SYSTEM} from 'deck.gl';
 
 import ObjectLabelsOverlay from './object-labels-overlay';
 
-import MeshLayer from '../../layers/mesh-layer/mesh-layer';
+import {SimpleMeshLayer} from '@deck.gl/mesh-layers';
 import {XVIZStyleParser} from '@xviz/parser';
 
 import XVIZLayer from '../../layers/xviz-layer';
@@ -137,7 +137,7 @@ export default class Core3DViewer extends PureComponent {
         coordinateOrigin: (frame && frame.origin) || DEFAULT_ORIGIN
       };
       this.setState({lightSettings});
-      stats.bump('frame-update');
+      stats.get('frame-update').incrementCount();
     }
   }
 
@@ -147,7 +147,7 @@ export default class Core3DViewer extends PureComponent {
         fps: deckMetrics.fps,
         redraw: deckMetrics.redraw || 0
       };
-      const table = stats.getStatsTable();
+      const table = stats.getTable();
 
       for (const key in table) {
         metrics[key] = table[key].total;
@@ -168,7 +168,7 @@ export default class Core3DViewer extends PureComponent {
     this.props.onHover(info, evt);
   };
 
-  _onLayerClick = (info, infos, evt) => {
+  _onLayerClick = (info, evt) => {
     const isRightClick = evt.which === 3;
 
     if (isRightClick) {
@@ -194,22 +194,24 @@ export default class Core3DViewer extends PureComponent {
       color = [0, 0, 0]
     } = car;
 
-    return new MeshLayer({
+    return new SimpleMeshLayer({
       id: 'car',
       opacity: 1,
       coordinateSystem: COORDINATE_SYSTEM.METER_OFFSETS,
       coordinateOrigin: frame.origin || DEFAULT_ORIGIN,
       // Adjust for car center position relative to GPS/IMU
-      modelMatrix: frame.vehicleRelativeTransform.clone().translate(origin),
+      getTransformMatrix: d => frame.vehicleRelativeTransform.clone().translate(origin),
       mesh,
       data: CAR_DATA,
       getPosition: d => d,
       getColor: color,
       // Support old scale format
-      getSize: Number.isFinite(scale) ? [scale, scale, scale] : scale,
+      getScale: Number.isFinite(scale) ? [scale, scale, scale] : scale,
       texture,
       wireframe,
-      lightSettings
+      updateTriggers: {
+        getTransformMatrix: frame.vehicleRelativeTransform
+      }
     });
   }
 
@@ -377,8 +379,8 @@ export default class Core3DViewer extends PureComponent {
         layers={this._getLayers()}
         layerFilter={this._layerFilter}
         getCursor={this._getCursor}
-        onLayerHover={this._onLayerHover}
-        onLayerClick={this._onLayerClick}
+        onHover={this._onLayerHover}
+        onClick={this._onLayerClick}
         onViewStateChange={this._onViewStateChange}
         _onMetrics={this._onMetrics}
       >

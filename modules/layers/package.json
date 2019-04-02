@@ -22,7 +22,7 @@
     "build": "npm run clean && npm run build-es6 && npm run build-esm && npm run build-es5"
   },
   "peerDependencies": {
-    "@deck.gl/core": "^6.3.0"
+    "@deck.gl/core": "^7.0.0-beta"
   },
   "engines": {
     "node": ">= 8",
