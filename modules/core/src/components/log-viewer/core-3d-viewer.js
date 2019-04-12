@@ -22,7 +22,8 @@ import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 
 import {StaticMap} from 'react-map-gl';
-import DeckGL, {COORDINATE_SYSTEM} from 'deck.gl';
+import DeckGL from '@deck.gl/react';
+import {COORDINATE_SYSTEM} from '@deck.gl/core';
 
 import ObjectLabelsOverlay from './object-labels-overlay';
 
@@ -38,7 +39,7 @@ import {mergeXVIZStyles} from '../../utils/style';
 import {normalizeStreamFilter} from '../../utils/stream-utils';
 import stats from '../../utils/stats';
 
-import {DEFAULT_ORIGIN, CAR_DATA, LIGHT_SETTINGS, DEFAULT_CAR} from './constants';
+import {DEFAULT_ORIGIN, CAR_DATA, DEFAULT_CAR} from './constants';
 
 const noop = () => {};
 
@@ -131,12 +132,6 @@ export default class Core3DViewer extends PureComponent {
       });
     }
     if (this.props.frame !== nextProps.frame) {
-      const {frame} = this.props;
-      const lightSettings = {
-        ...LIGHT_SETTINGS,
-        coordinateOrigin: (frame && frame.origin) || DEFAULT_ORIGIN
-      };
-      this.setState({lightSettings});
       stats.get('frame-update').incrementCount();
     }
   }
@@ -184,7 +179,6 @@ export default class Core3DViewer extends PureComponent {
 
   _getCarLayer() {
     const {frame, car} = this.props;
-    const {lightSettings} = this.state;
     const {
       origin = DEFAULT_ORIGIN,
       mesh,
@@ -229,7 +223,7 @@ export default class Core3DViewer extends PureComponent {
     }
 
     const {streams, lookAheads = {}} = frame;
-    const {styleParser, lightSettings} = this.state;
+    const {styleParser} = this.state;
 
     const streamFilter = normalizeStreamFilter(this.props.streamFilter);
     const featuresAndFutures = new Set(
@@ -262,7 +256,6 @@ export default class Core3DViewer extends PureComponent {
               ...coordinateProps,
 
               pickable: showTooltip || primitives[0].id,
-              lightSettings,
 
               data: primitives,
               style: stylesheet,
@@ -282,7 +275,6 @@ export default class Core3DViewer extends PureComponent {
               ...coordinateProps,
 
               pickable: showTooltip,
-              lightSettings,
 
               data: stream.pointCloud,
               style: stylesheet,
