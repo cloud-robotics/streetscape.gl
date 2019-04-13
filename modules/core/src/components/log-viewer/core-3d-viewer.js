@@ -39,7 +39,7 @@ import {mergeXVIZStyles} from '../../utils/style';
 import {normalizeStreamFilter} from '../../utils/stream-utils';
 import stats from '../../utils/stats';
 
-import {DEFAULT_ORIGIN, CAR_DATA, DEFAULT_CAR} from './constants';
+import {DEFAULT_ORIGIN, CAR_DATA, LIGHTS, DEFAULT_CAR} from './constants';
 
 const noop = () => {};
 
@@ -366,6 +366,7 @@ export default class Core3DViewer extends PureComponent {
       <DeckGL
         width="100%"
         height="100%"
+        effects={[LIGHTS]}
         views={getViews(viewMode)}
         viewState={this._getViewState()}
         layers={this._getLayers()}

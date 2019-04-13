@@ -22,8 +22,7 @@
     "build": "npm run clean && npm run build-es6 && npm run build-esm && npm run build-es5"
   },
   "dependencies": {
-    "@streetscape.gl/core": "^1.0.0-beta.4",
-    "@streetscape.gl/layers": "^1.0.0-beta.4"
+    "@streetscape.gl/core": "^1.0.0-beta"
   },
   "engines": {
     "node": ">= 8",

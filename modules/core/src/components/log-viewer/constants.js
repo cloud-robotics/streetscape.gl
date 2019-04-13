@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 import {CubeGeometry} from '@luma.gl/core';
+import {LightingEffect, AmbientLight, DirectionalLight} from '@deck.gl/core';
 
 export const DEFAULT_CAR = {
   mesh: new CubeGeometry(),
@@ -29,3 +30,9 @@ export const DEFAULT_CAR = {
 export const DEFAULT_ORIGIN = [0, 0, 0];
 
 export const CAR_DATA = [[0, 0, 0]];
+
+export const LIGHTS = new LightingEffect({
+  ambient: new AmbientLight({color: [255, 255, 255], intensity: 2.0}),
+  dir1: new DirectionalLight({color: [255, 255, 255], intensity: 1.0, direction: [-1, -3, -1]}),
+  dir2: new DirectionalLight({color: [255, 255, 255], intensity: 0.5, direction: [1, 8, -2.5]})
+});
